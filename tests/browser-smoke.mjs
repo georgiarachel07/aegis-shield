@@ -83,7 +83,7 @@ try{
   await dash.bringToFront();await dash.waitForFunction(()=>Number(document.querySelector('#total').textContent)>0&&Number(document.querySelector('#alert-count').textContent)>0);
   await tab.goto(url);await tab.evaluate(()=>{const link=document.createElement('a');link.href='/fixture.zip';link.download='fixture.zip';document.body.append(link);link.click();});
   await dash.bringToFront();await dash.getByText('Paused for review',{exact:true}).waitFor({timeout:20000});
-  await dash.getByRole('button',{name:'Review source URL'}).first().click();assert.equal(await dash.locator('#scan-url').inputValue(),url+'/fixture.zip');assert.equal(await dash.locator('#consent').isChecked(),false);
+  await dash.getByRole('button',{name:'Review source URL'}).first().click();await dash.waitForFunction(expected=>document.querySelector('#scan-url').value===expected,url+'/fixture.zip');assert.equal(await dash.locator('#scan-url').inputValue(),url+'/fixture.zip');assert.equal(await dash.locator('#consent').isChecked(),false);
   await dash.getByRole('button',{name:'Cancel download'}).first().click();await dash.getByText('Cancelled',{exact:true}).first().waitFor();
   for(const width of [1440,768,375]){await dash.setViewportSize({width,height:1000});assert.ok(await dash.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Page overflows at '+width);}
   if(process.env.SCREENSHOT_DIR){await mkdir(process.env.SCREENSHOT_DIR,{recursive:true});await dash.setViewportSize({width:1440,height:1000});await dash.screenshot({path:resolve(process.env.SCREENSHOT_DIR,'dashboard.png')});}
